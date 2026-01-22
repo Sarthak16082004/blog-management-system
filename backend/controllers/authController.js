@@ -11,7 +11,7 @@ exports.signup = (req, res) => {
 
   db.query(sql, [name, email, hashedPassword], (err) => {
     if (err) {
-      return res.status(500).json({ message: 'User already exists' });
+      return res.status(400).json({ message: 'User already exists' });
     }
     res.status(201).json({ message: 'User registered successfully' });
   });
