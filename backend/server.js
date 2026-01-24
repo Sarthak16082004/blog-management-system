@@ -5,6 +5,8 @@ const cors = require('cors');
 
 const authRoutes = require('./routes/authRoutes');
 const protectedRoutes = require('./routes/protectedRoutes');
+const blogRoutes = require('./routes/blogRoutes');
+
 const connectMongo = require('./config/mongo');
 
 const app = express();
@@ -16,10 +18,11 @@ app.use(express.json());
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api', protectedRoutes);
+app.use('/api', blogRoutes);
 
 // Test route
 app.get('/', (req, res) => {
-  res.send('Backend running with MySQL + MongoDB');
+  res.send('Backend running with MySQL + MongoDB + Blogs');
 });
 
 // Connect MongoDB
