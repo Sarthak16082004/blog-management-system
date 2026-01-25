@@ -6,7 +6,6 @@ import Navbar from '../components/Navbar';
 const Blogs = () => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -15,12 +14,11 @@ const Blogs = () => {
         const data = await getAllBlogs();
         setBlogs(data);
       } catch (err) {
-        setError(err.message);
+        console.error(err);
       } finally {
         setLoading(false);
       }
     };
-
     fetchBlogs();
   }, []);
 
@@ -29,28 +27,52 @@ const Blogs = () => {
       <Navbar />
 
       <div style={styles.page}>
-        <h1 style={styles.heading}>All Blogs</h1>
+        {/* 🔥 HERO SECTION */}
+        <div style={styles.hero}>
+          <h1 style={styles.heroTitle} className="gradient-text">
+            Discover Stories
+          </h1>
+          <p style={styles.heroSub}>
+            Read thoughts, ideas and experiences shared by creators.
+          </p>
+        </div>
 
-        {loading && <p>Loading blogs...</p>}
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-
-        {blogs.length === 0 && !loading && (
-          <p>No blogs yet. Click “Create Blog” to write one ✍️</p>
+        {/* ⏳ LOADING */}
+        {loading && (
+          <p style={{ textAlign: 'center', opacity: 0.6 }}>
+            Loading amazing content...
+          </p>
         )}
 
+        {/* ✍️ EMPTY STATE */}
+        {!loading && blogs.length === 0 && (
+          <div style={styles.empty}>
+            <h2>No blogs yet ✍️</h2>
+            <p>Be the first one to write something memorable.</p>
+          </div>
+        )}
+
+        {/* ✨ BLOG CARDS */}
         <div style={styles.grid}>
-          {blogs.map((blog) => (
+          {blogs.map((blog, index) => (
             <div
               key={blog._id}
-              style={styles.card}
+              style={{
+                ...styles.card,
+                animationDelay: `${index * 0.1}s`,
+              }}
               onClick={() => navigate(`/blogs/${blog._id}`)}
             >
-              <h3>{blog.title}</h3>
-              <p>
-                {blog.content.length > 100
-                  ? blog.content.slice(0, 100) + '...'
+              <div style={styles.cardGlow}></div>
+
+              <h3 style={styles.title}>{blog.title}</h3>
+              <p style={styles.content}>
+                {blog.content.length > 140
+                  ? blog.content.slice(0, 140) + '...'
                   : blog.content}
               </p>
+
+              <span style={styles.read}>Read full story →</span>
             </div>
           ))}
         </div>
@@ -61,24 +83,77 @@ const Blogs = () => {
 
 const styles = {
   page: {
-    padding: '40px',
     minHeight: '100vh',
-    background: '#0b0f19',
+    padding: '50px',
+    background:
+      'radial-gradient(circle at top, #0f172a, #020617)',
     color: '#fff',
   },
-  heading: {
-    marginBottom: '20px',
+
+  /* HERO */
+  hero: {
+    textAlign: 'center',
+    marginBottom: '60px',
   },
+  heroTitle: {
+    fontSize: '48px',
+    marginBottom: '12px',
+    letterSpacing: '1px',
+  },
+  heroSub: {
+    fontSize: '16px',
+    color: '#94a3b8',
+  },
+
+  /* GRID */
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-    gap: '20px',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+    gap: '28px',
   },
+
+  /* CARD */
   card: {
-    padding: '20px',
-    borderRadius: '10px',
-    background: 'rgba(255,255,255,0.08)',
+    position: 'relative',
+    padding: '26px',
+    borderRadius: '18px',
+    background: 'rgba(255,255,255,0.06)',
+    backdropFilter: 'blur(12px)',
     cursor: 'pointer',
+    overflow: 'hidden',
+    animation: 'floatUp 0.8s ease forwards',
+    opacity: 0,
+    transition: 'transform 0.4s ease',
+  },
+  cardGlow: {
+    position: 'absolute',
+    inset: 0,
+    borderRadius: '18px',
+    background:
+      'linear-gradient(120deg, transparent, rgba(96,165,250,0.15), transparent)',
+    opacity: 0,
+    transition: 'opacity 0.4s ease',
+  },
+
+  title: {
+    fontSize: '20px',
+    marginBottom: '12px',
+  },
+  content: {
+    fontSize: '14px',
+    color: '#cbd5f5',
+    lineHeight: '1.6',
+    marginBottom: '18px',
+  },
+  read: {
+    fontSize: '13px',
+    color: '#60a5fa',
+    fontWeight: '600',
+  },
+
+  empty: {
+    textAlign: 'center',
+    color: '#94a3b8',
   },
 };
 

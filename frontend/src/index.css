@@ -62,3 +62,61 @@ button {
     transform: translateY(0);
   }
 }
+/* ===== Skeleton Loader ===== */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.05) 25%,
+    rgba(255,255,255,0.15) 37%,
+    rgba(255,255,255,0.05) 63%
+  );
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease infinite;
+  border-radius: 10px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+/* ===== PREMIUM ANIMATIONS ===== */
+
+@keyframes floatUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 0 rgba(96, 165, 250, 0);
+  }
+  100% {
+    box-shadow: 0 0 25px rgba(96, 165, 250, 0.35);
+  }
+}
+
+.gradient-text {
+  background: linear-gradient(90deg, #60a5fa, #22c55e);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+/* ===== CARD HOVER MAGIC ===== */
+div[style*="floatUp"]:hover {
+  transform: translateY(-10px) scale(1.02);
+}
+
+div[style*="floatUp"]:hover div {
+  opacity: 1;
+  animation: glow 0.6s forwards;
+}
