@@ -11,17 +11,29 @@ const Navbar = () => {
 
   return (
     <nav style={styles.nav}>
-      <h2 style={styles.logo}>Blogify</h2>
+      <h2 style={styles.logo} onClick={() => navigate('/blogs')}>
+        Blogify
+      </h2>
 
-      <div>
-        <Link to="/blogs" style={styles.link}>Blogs</Link>
+      <div style={styles.actions}>
+        <Link to="/blogs" style={styles.link}>
+          Blogs
+        </Link>
+
+        {token && (
+          <Link to="/create-blog" style={styles.create}>
+            + Create Blog
+          </Link>
+        )}
 
         {token ? (
           <button onClick={handleLogout} style={styles.logout}>
             Logout
           </button>
         ) : (
-          <Link to="/login" style={styles.link}>Login</Link>
+          <Link to="/login" style={styles.link}>
+            Login
+          </Link>
         )}
       </div>
     </nav>
@@ -30,32 +42,46 @@ const Navbar = () => {
 
 const styles = {
   nav: {
-    width: '100%',              // ✅ THIS FIXES IT
+    width: '100%',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: '15px 40px',
+    padding: '14px 40px',
     background: '#0f172a',
     color: '#fff',
-    boxSizing: 'border-box',    // ✅ VERY IMPORTANT
+    boxSizing: 'border-box',
   },
   logo: {
-    margin: 0,
+    cursor: 'pointer',
+  },
+  actions: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '18px',
   },
   link: {
-    color: '#fff',
-    marginRight: '20px',
+    color: '#e5e7eb',
     textDecoration: 'none',
+    fontSize: '14px',
+  },
+  create: {
+    padding: '8px 14px',
+    background: '#22c55e',
+    color: '#000',
+    borderRadius: '6px',
+    textDecoration: 'none',
+    fontSize: '14px',
+    fontWeight: '600',
   },
   logout: {
     background: '#ef4444',
+    color: '#fff',
     border: 'none',
     padding: '8px 14px',
-    color: '#fff',
-    cursor: 'pointer',
     borderRadius: '6px',
+    cursor: 'pointer',
+    fontSize: '14px',
   },
 };
-
 
 export default Navbar;

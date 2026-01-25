@@ -7,7 +7,6 @@ const Blogs = () => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -16,7 +15,7 @@ const Blogs = () => {
         const data = await getAllBlogs();
         setBlogs(data);
       } catch (err) {
-        setError(err.message || 'Failed to fetch blogs');
+        setError(err.message);
       } finally {
         setLoading(false);
       }
@@ -32,33 +31,26 @@ const Blogs = () => {
       <div style={styles.page}>
         <h1 style={styles.heading}>All Blogs</h1>
 
-        {loading && <p style={styles.center}>Loading blogs...</p>}
-        {error && <p style={{ ...styles.center, color: 'red' }}>{error}</p>}
+        {loading && <p>Loading blogs...</p>}
+        {error && <p style={{ color: 'red' }}>{error}</p>}
 
-        {!loading && blogs.length === 0 && (
-          <div style={styles.empty}>
-            <h3>No blogs yet ✍️</h3>
-            <p>Be the first one to write a blog.</p>
-          </div>
+        {blogs.length === 0 && !loading && (
+          <p>No blogs yet. Click “Create Blog” to write one ✍️</p>
         )}
 
         <div style={styles.grid}>
-          {blogs.map((blog, index) => (
+          {blogs.map((blog) => (
             <div
               key={blog._id}
+              style={styles.card}
               onClick={() => navigate(`/blogs/${blog._id}`)}
-              style={{
-                ...styles.card,
-                animationDelay: `${index * 0.1}s`,
-              }}
             >
-              <h3 style={styles.title}>{blog.title}</h3>
-              <p style={styles.content}>
-                {blog.content.length > 120
-                  ? blog.content.slice(0, 120) + '...'
+              <h3>{blog.title}</h3>
+              <p>
+                {blog.content.length > 100
+                  ? blog.content.slice(0, 100) + '...'
                   : blog.content}
               </p>
-              <span style={styles.read}>Read more →</span>
             </div>
           ))}
         </div>
@@ -75,8 +67,7 @@ const styles = {
     color: '#fff',
   },
   heading: {
-    fontSize: '32px',
-    marginBottom: '30px',
+    marginBottom: '20px',
   },
   grid: {
     display: 'grid',
@@ -85,37 +76,9 @@ const styles = {
   },
   card: {
     padding: '20px',
-    borderRadius: '14px',
+    borderRadius: '10px',
     background: 'rgba(255,255,255,0.08)',
-    backdropFilter: 'blur(10px)',
-    boxShadow: '0 10px 25px rgba(0,0,0,0.3)',
     cursor: 'pointer',
-    animation: 'fadeUp 0.6s ease forwards',
-    opacity: 0,
-    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-  },
-  title: {
-    fontSize: '18px',
-    marginBottom: '10px',
-  },
-  content: {
-    fontSize: '14px',
-    color: '#d1d5db',
-    marginBottom: '12px',
-  },
-  read: {
-    fontSize: '13px',
-    color: '#60a5fa',
-    fontWeight: 'bold',
-  },
-  center: {
-    textAlign: 'center',
-    marginTop: '40px',
-  },
-  empty: {
-    textAlign: 'center',
-    marginTop: '60px',
-    color: '#9ca3af',
   },
 };
 
