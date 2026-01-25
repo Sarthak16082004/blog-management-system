@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { signupUser } from '../api/auth';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Signup = () => {
   const [name, setName] = useState('');
@@ -8,6 +8,14 @@ const Signup = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [animate, setAnimate] = useState(false);
+
+  const navigate = useNavigate();
+
+  // 🔥 React mount animation
+  useEffect(() => {
+    setTimeout(() => setAnimate(true), 100);
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,7 +24,7 @@ const Signup = () => {
 
     try {
       await signupUser(name, email, password);
-      alert('Signup successful. Please login.');
+      navigate('/login');
     } catch (err) {
       setError(err.message);
     } finally {
@@ -25,86 +33,138 @@ const Signup = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <form onSubmit={handleSubmit} style={styles.form}>
-        <h2>Signup</h2>
+    <div style={styles.page}>
+      <div
+        style={{
+          ...styles.card,
+          transform: animate ? 'scale(1)' : 'scale(0.9)',
+          opacity: animate ? 1 : 0,
+        }}
+      >
+        <h2 style={styles.title}>Create Account 🚀</h2>
+        <p style={styles.subtitle}>Start sharing your ideas</p>
 
-        {error && <p style={styles.error}>{error}</p>}
+        {error && <div style={styles.errorBox}>{error}</div>}
 
-        <input
-          type="text"
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-          style={styles.input}
-        />
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            placeholder="Full name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            style={styles.input}
+            required
+          />
 
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          style={styles.input}
-        />
+          <input
+            type="email"
+            placeholder="Email address"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            style={styles.input}
+            required
+          />
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          style={styles.input}
-        />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            style={styles.input}
+            required
+          />
 
-        <button type="submit" disabled={loading} style={styles.button}>
-          {loading ? 'Signing up...' : 'Signup'}
-        </button>
+          <button type="submit" style={styles.button} disabled={loading}>
+            {loading ? <span style={styles.loader}></span> : 'Signup'}
+          </button>
+        </form>
 
-        <p style={styles.text}>
-          Already have an account? <Link to="/login">Login</Link>
+        <p style={styles.footer}>
+          Already have an account?{' '}
+          <Link to="/login" style={styles.link}>
+            Login
+          </Link>
         </p>
-      </form>
+      </div>
     </div>
   );
 };
 
 const styles = {
-  container: {
+  page: {
     height: '100vh',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    background: '#f4f6f8',
+    background:
+      'radial-gradient(circle at bottom, #22c55e, #064e3b)',
   },
-  form: {
-    background: '#fff',
-    padding: '30px',
-    borderRadius: '8px',
-    width: '300px',
-    boxShadow: '0 0 10px rgba(0,0,0,0.1)',
+  card: {
+    width: '380px',
+    padding: '32px',
+    borderRadius: '16px',
+    background: 'rgba(255,255,255,0.12)',
+    backdropFilter: 'blur(18px)',
+    boxShadow: '0 25px 50px rgba(0,0,0,0.4)',
+    textAlign: 'center',
+    transition: 'all 0.6s ease',
+    color: '#fff',
+  },
+  title: {
+    fontSize: '26px',
+    marginBottom: '4px',
+  },
+  subtitle: {
+    fontSize: '14px',
+    color: '#d1d5db',
+    marginBottom: '24px',
   },
   input: {
     width: '100%',
-    padding: '10px',
-    margin: '10px 0',
+    padding: '12px',
+    marginBottom: '16px',
+    borderRadius: '10px',
+    border: 'none',
+    outline: 'none',
+    fontSize: '14px',
   },
   button: {
     width: '100%',
-    padding: '10px',
-    background: '#16a34a',
-    color: '#fff',
+    height: '44px',
+    borderRadius: '10px',
     border: 'none',
+    background: 'linear-gradient(135deg, #facc15, #eab308)',
+    color: '#000',
+    fontSize: '15px',
+    fontWeight: 'bold',
     cursor: 'pointer',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  error: {
-    color: 'red',
+  footer: {
+    marginTop: '18px',
     fontSize: '14px',
   },
-  text: {
-    marginTop: '10px',
-    fontSize: '14px',
+  link: {
+    color: '#fde68a',
+    textDecoration: 'none',
+    fontWeight: '600',
+  },
+  errorBox: {
+    background: 'rgba(255,0,0,0.15)',
+    padding: '10px',
+    borderRadius: '8px',
+    marginBottom: '16px',
+    fontSize: '13px',
+  },
+  loader: {
+    width: '18px',
+    height: '18px',
+    border: '3px solid #000',
+    borderTop: '3px solid transparent',
+    borderRadius: '50%',
+    animation: 'spin 1s linear infinite',
   },
 };
 
